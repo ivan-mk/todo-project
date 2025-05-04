@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email         String    @unique @db.VarChar(255)
+  password_hash String
+  full_name     String?   @db.VarChar(100)
+  is_verified   Boolean?  @default(false)
+  role          String?   @default("user") @db.VarChar(50)
+  created_at    DateTime? @default(now()) @db.Timestamp(6)
+  updated_at    DateTime? @default(now()) @db.Timestamp(6)
+  todos         todos[]
+}
+
+model todos {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title      String   @db.VarChar(255)
+  completed  Boolean  @default(false)
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @updatedAt @db.Timestamp(6)
+  userId     String   @db.Uuid
+  order      Int      @default(0)
+  user       users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Pomodoro {
+  id                String    @id @default(cuid())
+  userId            String    @unique
+  isResting         Boolean   @default(false)
+  isRunning         Boolean   @default(false)
+  startTime         DateTime?
+  remainingTime     Int?
+  completedPomodoros Int      @default(0)
+  isLongBreak       Boolean   @default(false)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@map("pomodoros")
+}
+
+model PomodoroSettings {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  pomodoroDuration  Int      @default(25)
+  breakDuration     Int      @default(5)
+  longBreakDuration Int      @default(15)
+  longBreakInterval Int      @default(4)
+  enableLongBreak   Boolean  @default(true)
+  notificationSound String   @default("https://commondatastorage.googleapis.com/codeskulptor-demos/riceracer_assets/music/start.ogg")
+  mute              Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("pomodoro_settings")
+}
