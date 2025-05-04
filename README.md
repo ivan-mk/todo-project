@@ -71,7 +71,7 @@ To explore the project locally, follow these steps:
 
 ## About Me
 
-I am a passionate web developer with expertise in building scalable and user-friendly applications. This project demonstrates my ability to design and implement full-stack solutions, focusing on clean code, performance, and user experience.
+I am a passionate software engineer with expertise in building scalable and user-friendly applications. This project demonstrates my ability to design and implement full-stack solutions.
 
 - Full-Stack Development
 - React
